@@ -32,11 +32,15 @@ public class MainWindow extends JFrame {
         add(playgroundMap);
 
 
-        buttonStart.addActionListener(e -> playgroundMap.startNewGame(0,3,3,3));
+        buttonStart.addActionListener(e -> playgroundMap.startNewGame(0,settings.jSliderFiledSize.getValue()
+                ,settings.jSliderFiledSize.getValue(),3));
 
         buttonEndGame.addActionListener(e -> System.exit(0));
         setVisible(true);
         settings = new SettingsWindow(this);
         settings.setVisible(true);
+    }
+    public void startNewGame(int mode, int fSzX, int fSzY, int wLen){
+        playgroundMap.startNewGame(mode, fSzX, fSzY, wLen);
     }
 }
