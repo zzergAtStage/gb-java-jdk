@@ -1,4 +1,4 @@
-package model;
+package tictactoe;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

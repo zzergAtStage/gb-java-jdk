@@ -1,4 +1,4 @@
-package model;
+package tictactoe;
 
 import javax.swing.*;
 import java.awt.*;
