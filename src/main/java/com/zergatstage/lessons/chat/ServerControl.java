@@ -1,7 +1,12 @@
 package com.zergatstage.lessons.chat;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 
 public class ServerControl extends JFrame {
     private final String SERVER_LABEL = "Is server working: ";
@@ -14,7 +19,7 @@ public class ServerControl extends JFrame {
     public static final int WINDOW_POSY = 100;
 
     public static void main(String[] args) {
-        JFrame serverControlWindow = new ServerControl();
+        new ServerControl();
     }
 
     public ServerControl() {
@@ -30,7 +35,7 @@ public class ServerControl extends JFrame {
         servetStatus = false;
         startServer.addActionListener(e ->
         {
-            if (!isServerInCurrentStatus(this, true)) {
+            if (isNotServerInCurrentStatus(this, true)) {
                 servetStatus = true;
                 serverStatusLabel.setText(SERVER_LABEL + servetStatus);
                 showServerMessage(serverMessages,String.format("Server starts: %b\n", servetStatus));
@@ -38,7 +43,7 @@ public class ServerControl extends JFrame {
         });
         JButton stopServer = new JButton("Stop server");
         stopServer.addActionListener(e -> {
-            if (!isServerInCurrentStatus(this, false)) {
+            if (isNotServerInCurrentStatus(this, false)) {
                 servetStatus = false;
                 serverStatusLabel.setText(SERVER_LABEL + servetStatus);
                 showServerMessage(serverMessages,String.format("Server starts: %b\n", servetStatus));
@@ -55,12 +60,12 @@ public class ServerControl extends JFrame {
         setVisible(true);
     }
 
-    private boolean isServerInCurrentStatus(ServerControl e, boolean newStatus) {
+    private boolean isNotServerInCurrentStatus(ServerControl e, boolean newStatus) {
         if (e.servetStatus == newStatus) {
             e.serverMessages.append(String.format("Server is already: %s", e.servetStatus));
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
     private void showServerMessage(JTextArea serverMessagesArea, String message){
         serverMessagesArea.append("\n" + message);
