@@ -3,35 +3,32 @@ package com.zergatstage.lessons.chat.model;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
 public class Chat {
     private ArrayList<User> activeUsers;
     //as the key, I will keep userId - to realize feature - U2U conversation
-    private Map<String, Message> messages;
+    private List<Message> messages;
     private User currentUser;
 
     public Chat(){
-        this.messages = new HashMap<>();
+        this.messages = new ArrayList<>();
         this.activeUsers = new ArrayList<>();
     }
 
     public void addMessage(Message message){
-        messages.put(message.getUserId(),message);
+        messages.add(message);
     }
     public List<Message> getAllMessages(){
-        return new ArrayList<>(messages.values());
+        return messages;
     }
 
     public List<Message> getMessagesByUser(String userId){
-        return messages.entrySet()
+        return messages
                 .stream()
-                .filter(entry -> entry.getKey().equals(userId))
-                .map(Map.Entry::getValue)
+                .filter(message -> message.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
 

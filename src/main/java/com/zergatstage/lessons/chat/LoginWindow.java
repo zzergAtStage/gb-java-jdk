@@ -7,45 +7,52 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class LoginWindow{
+public class LoginWindow extends JDialog{
 
-    User currentUser;
     public LoginWindow(ChatWindow c){
-        JFrame frame = new JFrame("Logon");
-        frame.setBounds(0,0,200,250);
-        frame.setLocationRelativeTo(c);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        JPanel pane = new JPanel();
-        pane.setLayout(new GridLayout(4,2,5,5));
+        super(c,"Logon", true);
+        initialize(c);
+    }
+
+    private void initialize(ChatWindow c) {
+        setLayout(new GridLayout(4,2));
+        setLocationRelativeTo(c);
+        setModal(true);
+        setResizable(false);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         JLabel serverIpLbl = new JLabel("Server");
+        add(serverIpLbl);
         JTextField serverIP = new JTextField("1.1.1.1");
+        add(serverIP);
+        add(new JLabel("User:"));
         JTextField userId = new JTextField("User id");
+        add(userId);
+        add(new JLabel("Password:"));
         JPasswordField userPassword = new JPasswordField("User password");
-        pane.add(serverIpLbl);
-        pane.add(serverIP);
-        pane.add(new JLabel("User:"));
-        pane.add(userId);
-        pane.add(new JLabel("Password:"));
-        pane.add(userPassword);
+        add(userPassword);
         JButton proceedLogin = new JButton("Login");
         JButton cancelLogin = new JButton("Cancel");
+        add(proceedLogin);
+        add(cancelLogin);
         proceedLogin.addActionListener( e -> {
             String message = loginUser(serverIP.getText(), userId.getText(),userPassword.getPassword());
-            if (!message.isBlank()) frame.dispose();
-            JOptionPane.showMessageDialog(frame, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
+            String dialogHeader = "Login error!";
+            if (message.isBlank() || message.equals("Go ahead!")) { //just to demonstrate functionality
+                dialogHeader = "Ok!";
+                c.currentUser = new User("SomeStubUser","Empty"
+                        ,Integer.parseInt(userId.getText()));
+                dispose();
+            }
+            JOptionPane.showMessageDialog(LoginWindow.this, message, dialogHeader, JOptionPane.ERROR_MESSAGE);
 
         });
-        cancelLogin.addActionListener( e -> frame.dispose());
-        pane.add(proceedLogin);
-        pane.add(cancelLogin);
-        frame.add(pane);
-        frame.setContentPane(pane);
-        frame.pack();
-        frame.setVisible(true);
-
-
+        cancelLogin.addActionListener( e -> {
+            dispose();
+            c.currentUser = null;
+        });
+        pack();
+        setVisible(true);
     }
 
     private String loginUser(String serverId, String userId, char[] password) {

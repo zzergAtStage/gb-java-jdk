@@ -4,63 +4,72 @@ import com.zergatstage.lessons.chat.model.Chat;
 import com.zergatstage.lessons.chat.model.ChatTransport;
 import com.zergatstage.lessons.chat.model.Message;
 import com.zergatstage.lessons.chat.model.User;
-import java.util.ArrayList;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChatWindow extends JFrame implements ChatTransport {
+public class ChatWindow extends JFrame {
     public static final int WINDOW_HIGH = 555;
     public static final int WINDOW_WIDTH = 507;
-    public static final int WINDOW_POSX = 800;
+    public static final int WINDOW_POSX = 200;
     public static final int WINDOW_POSY = 100;
-    private final JTextArea textBox = new JTextArea();
-    private  JMenuItem loginItem;
-    private  JMenuItem userLogOff;
-    private  JMenuItem exitProgram;
+    private JTextArea textBox = new JTextArea();
+    private JMenuItem loginItem;
+    private JMenuItem userLogOff;
+    private JMenuItem exitProgram;
     JMenuBar menuBar;
     JMenu jMenu;
     JScrollPane paneUserList;
     JPanel windowContent;
     JList<String> listUser;
-    JPanel chatHistoryPane;
-    JPanel messagePane;
 
     Chat chatEntity;
     User currentUser;
+    ChatTransport transport;
+    User atUser;
+
     public static void main(String[] args) {
         new ChatWindow();
     }
 
-    public ChatWindow(){
-        chatEntity = new Chat();
+    public ChatWindow() {
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setBounds(WINDOW_POSX,WINDOW_POSY,WINDOW_WIDTH,WINDOW_HIGH);
+        setBounds(WINDOW_POSX, WINDOW_POSY, WINDOW_WIDTH, WINDOW_HIGH);
         windowContent = new JPanel();
         GridBagLayout gb = new GridBagLayout();
         windowContent.setLayout(gb);
+        initChat();
 
         listUser = getUserWindowList(gb);
         GridBagConstraints constr;
 
         listUser.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) System.out.println(listUser.getSelectedValue());
+            if (!e.getValueIsAdjusting()) {
+                System.out.println(listUser.getSelectedValue());
+            }
         });
 
         //chat history box
-        constr = getGridBagConstraints(3,0, 3, 2,
-                GridBagConstraints.FIRST_LINE_END, GridBagConstraints.BOTH );
-        gb.setConstraints(textBox,constr);
+        constr = getGridBagConstraints(3, 0, 3, 2,
+                GridBagConstraints.FIRST_LINE_END, GridBagConstraints.BOTH);
+        gb.setConstraints(textBox, constr);
         windowContent.add(textBox);
         textBox.setEditable(false);
+        readChatHistory();
 
         //MessageField
         JTextField messageBox = new JTextField();
-        constr = getGridBagConstraints(2,2, 2, 1,
+        constr = getGridBagConstraints(2, 2, 2, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH);
-        gb.setConstraints(messageBox,constr);
+        gb.setConstraints(messageBox, constr);
         windowContent.add(messageBox);
         messageBox.addKeyListener(new KeyListener() {
             @Override
@@ -70,9 +79,7 @@ public class ChatWindow extends JFrame implements ChatTransport {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    // Handle the logic for sending the message
                     sendMessage(messageBox.getText());
-                    // Clear the messageBox after sending the message (optional)
                     messageBox.setText("");
                 }
             }
@@ -82,44 +89,65 @@ public class ChatWindow extends JFrame implements ChatTransport {
             }
         });
         //send button
-        JButton sentBtn = new JButton("Send");
-        constr = getGridBagConstraints(5,2, 1, 1,
-                GridBagConstraints.LAST_LINE_END,GridBagConstraints.NONE);
-        gb.setConstraints(sentBtn,constr);
-        windowContent.add(sentBtn);
+        JButton sendBtn = new JButton("Send");
+        sendBtn.addActionListener(e -> {
+            sendMessage(messageBox.getText());
+            messageBox.setText("");
+        });
+        constr = getGridBagConstraints(5, 2, 1, 1,
+                GridBagConstraints.LAST_LINE_END, GridBagConstraints.NONE);
+        gb.setConstraints(sendBtn, constr);
+        windowContent.add(sendBtn);
         setContentPane(windowContent);
         addMenu();
-
-
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                userLogOffMethod();
+            }
+        });
         setVisible(true);
     }
 
+    private void initChat() {
+        chatEntity = new Chat();
+        for (int i = 0; i < 100; i = i + 3) {
+            User tempUser = new User("User" + i, "Last" + i, i);
+            chatEntity.addUserToChat(tempUser);
+        }
+        userLogin(this);
+        // if (application.tunes("Use_File")) {
+        //filelog
+        transport = new ChatFileTransport();
+        //} else { some DB init transport}
+    }
+
     private JList<String> getUserWindowList(GridBagLayout gb) {
-        GridBagConstraints constr = getGridBagConstraints(0,0 , 2, 1 ,
+        GridBagConstraints constr = getGridBagConstraints(0, 0, 2, 1,
                 GridBagConstraints.FIRST_LINE_START, GridBagConstraints.NONE);
         JList<String> listUser = new JList<>();
-
         //listUser.setListData(new String[]{"User1", "User2", "User3", "User4", "User5"});
         listUser.setListData(chatEntity.getActiveUsers().stream()
                 .map(user -> user.getUserName() + " - " + user.getUserId())
                 .toArray(String[]::new));
 
         paneUserList = new JScrollPane(listUser);
-        gb.setConstraints(paneUserList,constr);
+        gb.setConstraints(paneUserList, constr);
         windowContent.add(paneUserList);
         return listUser;
     }
 
     private static GridBagConstraints getGridBagConstraints(int gridX, int gridY, int gridWidth, int gridHeight, int anchor, int fill) {
         GridBagConstraints constr = new GridBagConstraints();
-        constr.insets = new Insets(10,10,10,10);
-        constr.gridx=gridX;
-        constr.gridy=gridY;
-        constr.gridwidth=gridWidth;
-        constr.gridheight=gridHeight;
+        constr.insets = new Insets(10, 10, 10, 10);
+        constr.gridx = gridX;
+        constr.gridy = gridY;
+        constr.gridwidth = gridWidth;
+        constr.gridheight = gridHeight;
         constr.fill = fill;
         constr.weightx = (fill == GridBagConstraints.BOTH) ? 1.0 : 0.0;
-        constr.weighty = (fill == GridBagConstraints.BOTH) ? 1.0 : 0.0;;
+        constr.weighty = (fill == GridBagConstraints.BOTH) ? 1.0 : 0.0;
+        ;
         constr.anchor = anchor;
         return constr;
     }
@@ -140,31 +168,48 @@ public class ChatWindow extends JFrame implements ChatTransport {
         });
         jMenu.add(loginItem);
         userLogOff = new JMenuItem("User log off");
-        userLogOff.addActionListener(e -> System.out.println("A logout method called..."));
+        userLogOff.addActionListener(e -> userLogOffMethod());
         jMenu.add(userLogOff);
         jMenu.addSeparator();
         exitProgram = new JMenuItem("Exit");
-        exitProgram.addActionListener(e -> System.exit(0));
+        exitProgram.addActionListener(e -> {
+            userLogOffMethod();
+            System.exit(0);
+        });
         jMenu.add(exitProgram);
         menuBar.add(jMenu);
     }
 
-    private void userLogin(ChatWindow c){
+    private void userLogOffMethod() {
+        currentUser = null;
+        transport.saveMessage(chatEntity.getAllMessages());
+        transport.closeResource();
+        System.exit(0);
+    }
+
+    private void userLogin(ChatWindow c) {
         LoginWindow loginWindow = new LoginWindow(c);
         //TODO replaceStub
         currentUser = new User("Some", "Somevich", (int) Math.random());
     }
 
-    @Override
     public void sendMessage(String messageBody) {
         if (messageBody.isBlank()) return;
-        Message message = new Message();
-        textBox.append("\n" + message);
+        String time = LocalDateTime.now().toString();
+        Message message = new Message(String.valueOf(currentUser.getUserId()), "AtSome:"
+                , time, messageBody);
+
+        textBox.append(time + "@:" + message.getMessageBody() + "\n");
+        chatEntity.addMessage(message);
         repaint();
     }
 
-    @Override
-    public Chat readChatHistory() {
-        return null;
+    public void readChatHistory() {
+        List<Message> tmpChat = transport.readChatHistory();
+        if (tmpChat == null) return;
+        textBox.append(tmpChat.stream()
+                .map(message -> message.getMessageSendTime() + "@:" + message.getMessageBody())
+                .collect(Collectors.joining("\n"))
+        );
     }
 }
