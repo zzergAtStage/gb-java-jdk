@@ -46,4 +46,7 @@ public class Chat {
             if (user.equals(u)) activeUsers.remove(user);
         }
     }
+    public void restoreChat(List<Message> messageList){
+        this.messages = messageList;
+    }
 }

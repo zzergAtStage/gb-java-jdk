@@ -199,7 +199,7 @@ public class ChatWindow extends JFrame {
         Message message = new Message(String.valueOf(currentUser.getUserId()), "AtSome:"
                 , time, messageBody);
 
-        textBox.append(time + "@:" + message.getMessageBody() + "\n");
+        textBox.append("\n" + time + "@:" + message.getMessageBody() + "\n");
         chatEntity.addMessage(message);
         repaint();
     }
@@ -207,6 +207,7 @@ public class ChatWindow extends JFrame {
     public void readChatHistory() {
         List<Message> tmpChat = transport.readChatHistory();
         if (tmpChat == null) return;
+        chatEntity.restoreChat(tmpChat);
         textBox.append(tmpChat.stream()
                 .map(message -> message.getMessageSendTime() + "@:" + message.getMessageBody())
                 .collect(Collectors.joining("\n"))
