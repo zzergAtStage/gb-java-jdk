@@ -60,6 +60,8 @@ public class ChatWindow extends JFrame {
         //chat history box
         constr = getGridBagConstraints(3, 0, 3, 2,
                 GridBagConstraints.FIRST_LINE_END, GridBagConstraints.BOTH);
+        constr.weightx = 0.5;
+        constr.weighty = 1.0;
         gb.setConstraints(textBox, constr);
         windowContent.add(textBox);
         textBox.setEditable(false);
@@ -99,6 +101,9 @@ public class ChatWindow extends JFrame {
         gb.setConstraints(sendBtn, constr);
         windowContent.add(sendBtn);
         setContentPane(windowContent);
+        //trying to fix panes scaling
+        textBox.setLineWrap(true);
+        textBox.setWrapStyleWord(true);
         addMenu();
         addWindowListener(new WindowAdapter() {
             @Override
@@ -123,8 +128,8 @@ public class ChatWindow extends JFrame {
     }
 
     private JList<String> getUserWindowList(GridBagLayout gb) {
-        GridBagConstraints constr = getGridBagConstraints(0, 0, 2, 1,
-                GridBagConstraints.FIRST_LINE_START, GridBagConstraints.NONE);
+        GridBagConstraints constr = getGridBagConstraints(0, 0, 2, 2,
+                GridBagConstraints.FIRST_LINE_START, GridBagConstraints.BOTH);
         JList<String> listUser = new JList<>();
         //listUser.setListData(new String[]{"User1", "User2", "User3", "User4", "User5"});
         listUser.setListData(chatEntity.getActiveUsers().stream()
@@ -132,6 +137,8 @@ public class ChatWindow extends JFrame {
                 .toArray(String[]::new));
 
         paneUserList = new JScrollPane(listUser);
+        constr.weighty = 1.0;
+        constr.weightx = 0.5;
         gb.setConstraints(paneUserList, constr);
         windowContent.add(paneUserList);
         return listUser;
