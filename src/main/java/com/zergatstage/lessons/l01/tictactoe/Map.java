@@ -1,4 +1,4 @@
-package tictactoe;
+package com.zergatstage.lessons.l01.tictactoe;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package tictactoe;
+package com.zergatstage.lessons.l01.tictactoe;
 
 // Assume you have a method to check if the game is over and to evaluate the current state of the board.
 

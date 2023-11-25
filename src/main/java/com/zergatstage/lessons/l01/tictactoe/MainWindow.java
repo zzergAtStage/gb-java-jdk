@@ -1,4 +1,4 @@
-package tictactoe;
+package com.zergatstage.lessons.l01.tictactoe;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
