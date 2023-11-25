@@ -2,7 +2,7 @@ package com.zergatstage.lessons.l02;
 
 import java.awt.*;
 
-public abstract class Sprite {
+public abstract class Sprite implements Intractable{
     protected float x;
     protected float y;
 
@@ -53,9 +53,9 @@ public abstract class Sprite {
         return 2f * halfHeight;
     }
 
-    void update(MainCanvas canvas, float deltaTime) {
+    public void update(MainCanvas canvas, float deltaTime) {
     }
 
-    void render(MainCanvas canvas, Graphics graphics) {
+    public void render(MainCanvas canvas, Graphics graphics) {
     }
 }

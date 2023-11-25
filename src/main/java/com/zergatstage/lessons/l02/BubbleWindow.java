@@ -9,7 +9,7 @@ public class BubbleWindow extends JFrame {
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 400;
 
-    private final Sprite[] sprites = new Sprite[10];
+    private final Intractable[] sprites = new Intractable[10];
     public BubbleWindow(){
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(WINDOW_POSX,WINDOW_POSY,WINDOW_WIDTH,WINDOW_HEIGHT);
@@ -17,7 +17,8 @@ public class BubbleWindow extends JFrame {
         //create canvas
         MainCanvas canvas = new MainCanvas(this);
         //create instances
-        for (int i = 0; i < sprites.length; i++) {
+        sprites[0] = new Background();
+        for (int i = 1; i < sprites.length; i++) {
             sprites[i]=new Ball();
         }
 
@@ -38,12 +39,12 @@ public class BubbleWindow extends JFrame {
 
 
     private void update(MainCanvas canvas, float deltaTime) {
-        for (Sprite sprite : sprites) {
+        for (Intractable sprite : sprites) {
             sprite.update(canvas, deltaTime);
         }
     }
     private void render(MainCanvas canvas, Graphics graphics) {
-        for (Sprite sprite : sprites) {
+        for (Intractable sprite : sprites) {
             sprite.render(canvas, graphics);
         }
     }

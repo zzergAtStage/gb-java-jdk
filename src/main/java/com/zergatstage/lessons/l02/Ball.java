@@ -3,7 +3,7 @@ package com.zergatstage.lessons.l02;
 import java.awt.*;
 import java.util.Random;
 
-public class Ball extends Sprite {
+public class Ball extends Sprite implements Intractable{
     private static Random random = new Random();
     private final Color color;
     private float vectorX;
@@ -16,8 +16,8 @@ public class Ball extends Sprite {
         vectorX = 100 + (float) (Math.random() * 200f);
         vectorY = 100 + (float) (Math.random() * 200f);
     }
-    @Override
-    void update(MainCanvas canvas, float deltaTime){
+
+    public void update(MainCanvas canvas, float deltaTime){
         x += vectorX * deltaTime;
         y += vectorY * deltaTime;
         //check borders
@@ -38,8 +38,8 @@ public class Ball extends Sprite {
             vectorY = -vectorY;
         }
     }
-    @Override
-    void render(MainCanvas canvas, Graphics graphics){
+
+    public void render(MainCanvas canvas, Graphics graphics){
         graphics.setColor(color);
         graphics.fillOval((int) getLeft(), (int) getTop(),
                 (int) getWidth(), (int) getHeight());
