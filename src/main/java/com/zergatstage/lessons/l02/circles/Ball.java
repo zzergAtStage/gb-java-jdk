@@ -1,15 +1,19 @@
-package com.zergatstage.lessons.l02;
+package com.zergatstage.lessons.l02.circles;
+
+import com.zergatstage.lessons.l02.common.Intractable;
+import com.zergatstage.lessons.l02.common.MainCanvas;
+import com.zergatstage.lessons.l02.common.Sprite;
 
 import java.awt.*;
 import java.util.Random;
 
-public class Ball extends Sprite implements Intractable{
+public class Ball extends Sprite implements Intractable {
     private static Random random = new Random();
     private final Color color;
     private float vectorX;
     private float vectorY;
 
-    Ball() {
+    public Ball() {
         halfHeight = 20 + (float) (Math.random() * 50f);
         halfWidth = halfHeight;
         color = new Color(random.nextInt());
@@ -17,11 +21,12 @@ public class Ball extends Sprite implements Intractable{
         vectorY = 100 + (float) (Math.random() * 200f);
     }
 
-    public void update(MainCanvas canvas, float deltaTime){
+    @Override
+    public void update(MainCanvas canvas, float deltaTime) {
         x += vectorX * deltaTime;
         y += vectorY * deltaTime;
         //check borders
-        if(getLeft() < canvas.getLeft()){
+        if (getLeft() < canvas.getLeft()) {
             setLeft(canvas.getLeft());
             vectorX = -vectorX;
         }
@@ -33,13 +38,14 @@ public class Ball extends Sprite implements Intractable{
             setBottom(canvas.getBottom());
             vectorY = -vectorY;
         }
-        if (getTop() < canvas.getTop()){
+        if (getTop() < canvas.getTop()) {
             setTop(canvas.getBottom());
             vectorY = -vectorY;
         }
     }
 
-    public void render(MainCanvas canvas, Graphics graphics){
+    @Override
+    public void render(MainCanvas canvas, Graphics graphics) {
         graphics.setColor(color);
         graphics.fillOval((int) getLeft(), (int) getTop(),
                 (int) getWidth(), (int) getHeight());

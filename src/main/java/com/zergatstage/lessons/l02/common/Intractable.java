@@ -1,4 +1,4 @@
-package com.zergatstage.lessons.l02;
+package com.zergatstage.lessons.l02.common;
 
 import java.awt.*;
 

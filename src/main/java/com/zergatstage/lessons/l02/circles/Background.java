@@ -1,8 +1,11 @@
-package com.zergatstage.lessons.l02;
+package com.zergatstage.lessons.l02.circles;
+
+import com.zergatstage.lessons.l02.common.MainCanvas;
+import com.zergatstage.lessons.l02.common.Intractable;
 
 import java.awt.*;
 
-public class Background implements Intractable{
+public class Background implements Intractable {
     private float time;
     private static final float AMPLITUDE = 255f / 2f;
     private Color color;

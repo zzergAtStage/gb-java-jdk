@@ -1,12 +1,14 @@
-package com.zergatstage.lessons.l02;
+package com.zergatstage.lessons.l02.common;
+
+import com.zergatstage.lessons.l02.circles.BubbleWindow;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainCanvas extends JPanel {
-    private final BubbleWindow controller;
+    private final CanvasRepaintListener controller;
     private float lastFrameTime;
-    MainCanvas(BubbleWindow controller){
+    public MainCanvas(CanvasRepaintListener controller){
         setBackground(Color.GRAY);
         this.controller = controller;
         lastFrameTime = System.nanoTime();
