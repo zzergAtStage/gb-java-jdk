@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -216,5 +217,25 @@ public class ChatWindow extends JFrame implements SocketThreadListener {
                 .map(message -> message.getMessageSendTime() + "@:" + message.getMessageBody())
                 .collect(Collectors.joining("\n"))
         );
+    }
+
+    @Override
+    public void onSocketStart(Socket s) {
+
+    }
+
+    @Override
+    public void onSocketStop() {
+
+    }
+
+    @Override
+    public void onSocketReady(Socket socket) {
+
+    }
+
+    @Override
+    public void onReceivedString(Socket s, String message) {
+
     }
 }
