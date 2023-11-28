@@ -3,8 +3,9 @@ package com.zergatstage.lessons.chat.model;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ChatServer implements ServerSocketThreadListener{
+public class ChatServer implements ServerSocketThreadListener, SocketThreadListener{
     private boolean isServerWorking;
+    private ServerSocketListener server;
     private final ChatServerListener listener;
 
     public ChatServer(ChatServerListener listener) {
@@ -17,6 +18,7 @@ public class ChatServer implements ServerSocketThreadListener{
             listener.onMessageReceived("server is already working.");
             return;
         }
+        server = new ServerSocketListener(this);
         listener.onMessageReceived("Server started.");
         isServerWorking = true;
     }
@@ -41,7 +43,7 @@ public class ChatServer implements ServerSocketThreadListener{
 
     @Override
     public void onServerSocketCreated(ServerSocket socket) {
-
+        listener.onMessageReceived("Server Socked Created");
     }
 
     @Override
@@ -51,11 +53,31 @@ public class ChatServer implements ServerSocketThreadListener{
 
     @Override
     public void onSocketAccepted(ServerSocket s, Socket client) {
-
+        listener.onMessageReceived("client connected");
     }
 
     @Override
     public void onServerException(Throwable exception) {
+        exception.printStackTrace();
+    }
 
+    @Override
+    public void onSocketStart(Socket s) {
+        listener.onMessageReceived("Client connected as client");
+    }
+
+    @Override
+    public void onSocketStop() {
+        listener.onMessageReceived("Client dropped");
+    }
+
+    @Override
+    public void onSocketReady(Socket socket) {
+        listener.onMessageReceived("Client is ready");
+    }
+
+    @Override
+    public synchronized void onReceivedString(Socket s, String message) {
+        listener.onMessageReceived(message);
     }
 }

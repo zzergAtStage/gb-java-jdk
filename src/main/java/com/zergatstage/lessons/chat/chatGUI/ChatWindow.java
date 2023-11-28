@@ -196,6 +196,10 @@ public class ChatWindow extends JFrame implements SocketThreadListener {
         LoginWindow loginWindow = new LoginWindow(c);
         //TODO replaceStub
         currentUser = new User("Some", "Somevich", (int) Math.random());
+        connect();
+    }
+    private void connect(){
+        SocketThread socketThread = new SocketThread(this);
     }
 
     public void sendMessage(String messageBody) {
@@ -221,21 +225,21 @@ public class ChatWindow extends JFrame implements SocketThreadListener {
 
     @Override
     public void onSocketStart(Socket s) {
-
+        textBox.append("Started" + "\n");
     }
 
     @Override
     public void onSocketStop() {
-
+        textBox.append("Stopped" + "\n");
     }
 
     @Override
     public void onSocketReady(Socket socket) {
-
+        textBox.append("Ready" + "\n");
     }
 
     @Override
     public void onReceivedString(Socket s, String message) {
-
+        textBox.append(message + "\n");
     }
 }
