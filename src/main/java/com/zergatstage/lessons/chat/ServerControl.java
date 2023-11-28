@@ -55,6 +55,14 @@ public class ServerControl extends JFrame implements ChatServerListener, ChatSer
         add(paneAbove);
         setVisible(true);
     }
+
+    public void addObserver(ChatServerLoggingService service){
+        observers.add(service);
+    }
+    public void removeObserver(ChatServerLoggingService service){
+        observers.remove(service);
+    }
+
     //announce observers about message event
     @Override
     public void logStatus(String message) {
