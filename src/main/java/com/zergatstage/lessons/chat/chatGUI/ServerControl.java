@@ -1,9 +1,8 @@
-package com.zergatstage.lessons.chat;
+package com.zergatstage.lessons.chat.chatGUI;
 
 import com.zergatstage.lessons.chat.model.ChatServer;
 import com.zergatstage.lessons.chat.model.ChatServerListener;
 import com.zergatstage.lessons.chat.model.ChatServerLoggingService;
-import com.zergatstage.lessons.chat.model.Message;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,8 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 

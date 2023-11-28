@@ -1,6 +1,9 @@
 package com.zergatstage.lessons.chat.model;
 
-public class ChatServer {
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class ChatServer implements ServerSocketThreadListener{
     private boolean isServerWorking;
     private final ChatServerListener listener;
 
@@ -24,5 +27,35 @@ public class ChatServer {
         }
         listener.onMessageReceived("Server stopped.");
         isServerWorking = false;
+    }
+
+    @Override
+    public void onServerStart() {
+        listener.onMessageReceived("Server thread started.");
+    }
+
+    @Override
+    public void onServerStop() {
+        listener.onMessageReceived("Server thread stopped");
+    }
+
+    @Override
+    public void onServerSocketCreated(ServerSocket socket) {
+
+    }
+
+    @Override
+    public void onServerSocketTimeout(ServerSocket socket) {
+
+    }
+
+    @Override
+    public void onSocketAccepted(ServerSocket s, Socket client) {
+
+    }
+
+    @Override
+    public void onServerException(Throwable exception) {
+
     }
 }
