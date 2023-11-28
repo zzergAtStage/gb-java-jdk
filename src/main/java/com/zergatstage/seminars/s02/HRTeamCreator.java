@@ -1,4 +1,4 @@
-package com.zergatstage.seminars;
+package com.zergatstage.seminars.s02;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.zergatstage.seminars;
+package com.zergatstage.seminars.s02;
 
 public interface FullStackDeveloperInterface extends FrontendDeveloperInteface, BackenderInterface {
     public void createForms(String formsDescription);
