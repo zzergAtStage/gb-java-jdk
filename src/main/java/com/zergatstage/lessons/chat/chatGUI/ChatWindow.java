@@ -27,7 +27,6 @@ public class ChatWindow extends JFrame implements SocketThreadListener {
     Chat chatEntity;
     User currentUser;
     ChatTransport transport;
-    User atUser;
     private JTextArea textBox = new JTextArea();
     private JMenuItem loginItem;
     private JMenuItem userLogOff;
@@ -195,7 +194,7 @@ public class ChatWindow extends JFrame implements SocketThreadListener {
     private void userLogin(ChatWindow c) {
         LoginWindow loginWindow = new LoginWindow(c);
         //TODO replaceStub
-        currentUser = new User("Some", "Somevich", (int) Math.random());
+        currentUser = new User("Some", "Somevich", 0);
         connect();
     }
     private void connect(){
