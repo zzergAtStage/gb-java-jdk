@@ -36,3 +36,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/ChatLog.txt
+/src/main/java/Tst.java
