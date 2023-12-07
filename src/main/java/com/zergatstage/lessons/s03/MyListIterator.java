@@ -9,11 +9,11 @@ public class MyListIterator<E>{
         this.array = array;
     }
     public boolean hasNext(){
-        return index < array.getCapacity();
+        return index < array.getCapacity() && !(array.get(index) == null);
     }
 
     public E next(){
-        if (!hasNext()) {
+        if (!hasNext() && !(array.get(index) == null)) {
             throw new NoSuchElementException("Reached the last element of collection");
         }
         return array.get(index++);

@@ -27,5 +27,11 @@ public class MyApp {
             System.out.println(myListMyListIterator.next() + " ");
         }
 
+        // task04
+        System.out.println("==================== task 04 =====================");
+        Workplace<Person> w = new Workplace<>(new Worker(), new Worker(), new IdleWorker());
+        Club<Person> c = new Club<>(new Worker(), new Worker(), new IdleWorker());
+        w.work();
+        c.chill();
     }
 }
