@@ -1,4 +1,8 @@
-package com.zergatstage.lessons.chat;
+package com.zergatstage.lessons.chat.chatGUI;
+
+import com.zergatstage.lessons.chat.model.ChatServer;
+import com.zergatstage.lessons.chat.model.ChatServerListener;
+import com.zergatstage.lessons.chat.model.ChatServerLoggingService;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -7,22 +11,26 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ServerControl extends JFrame {
+public class ServerControl extends JFrame implements ChatServerListener, ChatServerLoggingService {
     private final String SERVER_LABEL = "Is server working: ";
     private  JLabel serverStatusLabel;
     private  JTextArea serverMessages;
-    private boolean servetStatus;
+    //adding observers for server logging events
+    private List<ChatServerLoggingService> observers;
     public static final int WINDOW_HIGH = 555;
     public static final int WINDOW_WIDTH = 507;
     public static final int WINDOW_POSX = 800;
     public static final int WINDOW_POSY = 100;
-
     public static void main(String[] args) {
         new ServerControl();
     }
 
     public ServerControl() {
+        ChatServer server = new ChatServer(this);
+        observers = new ArrayList<>();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HIGH);
         setLocation(WINDOW_POSX, WINDOW_POSY);
@@ -32,23 +40,9 @@ public class ServerControl extends JFrame {
         serverMessages = new JTextArea();
         serverStatusLabel = new JLabel(SERVER_LABEL);
         JButton startServer = new JButton("Start server");
-        servetStatus = false;
-        startServer.addActionListener(e ->
-        {
-            if (isNotServerInCurrentStatus(this, true)) {
-                servetStatus = true;
-                serverStatusLabel.setText(SERVER_LABEL + servetStatus);
-                showServerMessage(serverMessages,String.format("Server starts: %b\n", servetStatus));
-            }
-        });
+        startServer.addActionListener(e -> server.start());
         JButton stopServer = new JButton("Stop server");
-        stopServer.addActionListener(e -> {
-            if (isNotServerInCurrentStatus(this, false)) {
-                servetStatus = false;
-                serverStatusLabel.setText(SERVER_LABEL + servetStatus);
-                showServerMessage(serverMessages,String.format("Server starts: %b\n", servetStatus));
-            }
-        });
+        stopServer.addActionListener(e -> server.stop());
 
         paneAbove.add(serverStatusLabel, BorderLayout.NORTH);
         panelBottom.add(startServer, 0);
@@ -56,18 +50,27 @@ public class ServerControl extends JFrame {
         paneAbove.add(panelBottom, BorderLayout.SOUTH);
         paneAbove.add(serverMessages,BorderLayout.CENTER);
         add(paneAbove);
-        //add(panelBottom);
         setVisible(true);
     }
 
-    private boolean isNotServerInCurrentStatus(ServerControl e, boolean newStatus) {
-        if (e.servetStatus == newStatus) {
-            e.serverMessages.append(String.format("Server is already: %s", e.servetStatus));
-            return false;
-        }
-        return true;
+    public void addObserver(ChatServerLoggingService service){
+        observers.add(service);
     }
-    private void showServerMessage(JTextArea serverMessagesArea, String message){
-        serverMessagesArea.append("\n" + message);
+    public void removeObserver(ChatServerLoggingService service){
+        observers.remove(service);
+    }
+
+    //announce observers about message event
+    @Override
+    public void logStatus(String message) {
+        for (ChatServerLoggingService observer:
+             observers) {
+            observer.logStatus(message);
+        };
+    }
+    @Override
+    public void onMessageReceived(String message) {
+        serverMessages.append("\n" + message);
+        logStatus(message);
     }
 }

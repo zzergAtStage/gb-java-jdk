@@ -1,5 +1,6 @@
-package com.zergatstage.lessons.chat;
+package com.zergatstage.lessons.chat.chatGUI;
 
+import com.zergatstage.lessons.chat.ServerAuthorizationStub;
 import com.zergatstage.lessons.chat.model.User;
 import com.zergatstage.lessons.chat.model.UserCredentials;
 

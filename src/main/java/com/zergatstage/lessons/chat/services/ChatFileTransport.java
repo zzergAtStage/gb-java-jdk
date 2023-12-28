@@ -1,4 +1,4 @@
-package com.zergatstage.lessons.chat;
+package com.zergatstage.lessons.chat.services;
 
 import com.zergatstage.lessons.chat.model.ChatTransport;
 import com.zergatstage.lessons.chat.model.Message;

@@ -1,9 +1,7 @@
-package com.zergatstage.lessons.chat;
+package com.zergatstage.lessons.chat.chatGUI;
 
-import com.zergatstage.lessons.chat.model.Chat;
-import com.zergatstage.lessons.chat.model.ChatTransport;
-import com.zergatstage.lessons.chat.model.Message;
-import com.zergatstage.lessons.chat.model.User;
+import com.zergatstage.lessons.chat.model.*;
+import com.zergatstage.lessons.chat.services.ChatFileTransport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,33 +9,28 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChatWindow extends JFrame {
+public class ChatWindow extends JFrame implements SocketThreadListener {
     public static final int WINDOW_HIGH = 555;
     public static final int WINDOW_WIDTH = 507;
     public static final int WINDOW_POSX = 200;
     public static final int WINDOW_POSY = 100;
-    private JTextArea textBox = new JTextArea();
-    private JMenuItem loginItem;
-    private JMenuItem userLogOff;
-    private JMenuItem exitProgram;
     JMenuBar menuBar;
     JMenu jMenu;
     JScrollPane paneUserList;
     JPanel windowContent;
     JList<String> listUser;
-
     Chat chatEntity;
     User currentUser;
     ChatTransport transport;
-    User atUser;
-
-    public static void main(String[] args) {
-        new ChatWindow();
-    }
+    private JTextArea textBox = new JTextArea();
+    private JMenuItem loginItem;
+    private JMenuItem userLogOff;
+    private JMenuItem exitProgram;
 
     public ChatWindow() {
 
@@ -114,6 +107,25 @@ public class ChatWindow extends JFrame {
         setVisible(true);
     }
 
+    public static void main(String[] args) {
+        new ChatWindow();
+    }
+
+    private static GridBagConstraints getGridBagConstraints(int gridX, int gridY, int gridWidth, int gridHeight, int anchor, int fill) {
+        GridBagConstraints constr = new GridBagConstraints();
+        constr.insets = new Insets(10, 10, 10, 10);
+        constr.gridx = gridX;
+        constr.gridy = gridY;
+        constr.gridwidth = gridWidth;
+        constr.gridheight = gridHeight;
+        constr.fill = fill;
+        constr.weightx = (fill == GridBagConstraints.BOTH) ? 1.0 : 0.0;
+        constr.weighty = (fill == GridBagConstraints.BOTH) ? 1.0 : 0.0;
+        ;
+        constr.anchor = anchor;
+        return constr;
+    }
+
     private void initChat() {
         chatEntity = new Chat();
         for (int i = 0; i < 100; i = i + 3) {
@@ -142,21 +154,6 @@ public class ChatWindow extends JFrame {
         gb.setConstraints(paneUserList, constr);
         windowContent.add(paneUserList);
         return listUser;
-    }
-
-    private static GridBagConstraints getGridBagConstraints(int gridX, int gridY, int gridWidth, int gridHeight, int anchor, int fill) {
-        GridBagConstraints constr = new GridBagConstraints();
-        constr.insets = new Insets(10, 10, 10, 10);
-        constr.gridx = gridX;
-        constr.gridy = gridY;
-        constr.gridwidth = gridWidth;
-        constr.gridheight = gridHeight;
-        constr.fill = fill;
-        constr.weightx = (fill == GridBagConstraints.BOTH) ? 1.0 : 0.0;
-        constr.weighty = (fill == GridBagConstraints.BOTH) ? 1.0 : 0.0;
-        ;
-        constr.anchor = anchor;
-        return constr;
     }
 
     private void addMenu() {
@@ -197,7 +194,11 @@ public class ChatWindow extends JFrame {
     private void userLogin(ChatWindow c) {
         LoginWindow loginWindow = new LoginWindow(c);
         //TODO replaceStub
-        currentUser = new User("Some", "Somevich", (int) Math.random());
+        currentUser = new User("Some", "Somevich", 0);
+        connect();
+    }
+    private void connect(){
+        SocketThread socketThread = new SocketThread(this);
     }
 
     public void sendMessage(String messageBody) {
@@ -219,5 +220,25 @@ public class ChatWindow extends JFrame {
                 .map(message -> message.getMessageSendTime() + "@:" + message.getMessageBody())
                 .collect(Collectors.joining("\n"))
         );
+    }
+
+    @Override
+    public void onSocketStart(Socket s) {
+        textBox.append("Started" + "\n");
+    }
+
+    @Override
+    public void onSocketStop() {
+        textBox.append("Stopped" + "\n");
+    }
+
+    @Override
+    public void onSocketReady(Socket socket) {
+        textBox.append("Ready" + "\n");
+    }
+
+    @Override
+    public void onReceivedString(Socket s, String message) {
+        textBox.append(message + "\n");
     }
 }
