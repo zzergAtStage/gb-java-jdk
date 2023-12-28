@@ -1,8 +1,14 @@
-package model;
+package com.zergatstage.lessons.l01.tictactoe;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
+/**
+ * Makes new window for the Game of TicTakToe.
+ */
 public class MainWindow extends JFrame {
     //properties
     public static final int WINDOW_HIGH = 555;
@@ -40,6 +46,14 @@ public class MainWindow extends JFrame {
         settings = new SettingsWindow(this);
         settings.setVisible(true);
     }
+
+    /**
+     * Starts new game with parameters:
+     * @param mode Mode: 0 - between Human and Computer, 1 between Human and Human
+     * @param fSzX Horizontal field size (squares)
+     * @param fSzY Vertical field size (squares)
+     * @param wLen Minimal length of winning cell in line
+     */
     public void startNewGame(int mode, int fSzX, int fSzY, int wLen){
         playgroundMap.startNewGame(mode, fSzX, fSzY, wLen);
     }
